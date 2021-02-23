@@ -363,6 +363,7 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                 cl::vector<cl::Kernel> kernels;
                 // Run compilation
                 if (precompiled_kernels.empty()) {
+                    auto start = std::chrono::high_resolution_clock::now();
                     cl::Program program(_context.context(), sources_bucket_to_compile);
                     program.build({_context.device()}, program_source.options.c_str());
 
@@ -373,13 +374,13 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
 
                         dump_file << "*/\n";
                     }
-                    auto start = std::chrono::high_resolution_clock::now();
+                    
 
                     program.createKernels(&kernels);
 
                     auto stop = std::chrono::high_resolution_clock::now();
-                    auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-                    std::cout << "Group "<< i << ": " << time.count() << " µs" << std::endl;
+                    auto time = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+                    std::cout << "Group "<< i << ": " << time.count() << " ms" << std::endl;
 		            //kernel_create.push_back(time.count());
 
                     if (is_cache_enabled()) {
@@ -390,10 +391,10 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                         saveBinaryToFile(cached_bin_name, getProgramBinaries(program));
                     }
                 } else {
-                    cl::Program program(_context.context(), {_context.device()}, precompiled_kernels);
-
                     auto start = std::chrono::high_resolution_clock::now();
 
+                    cl::Program program(_context.context(), {_context.device()}, precompiled_kernels);
+                    
                     program.build({_context.device()}, program_source.options.c_str());
                     program.createKernels(&kernels);
 
