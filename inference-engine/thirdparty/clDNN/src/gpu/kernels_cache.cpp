@@ -461,7 +461,6 @@ void kernels_cache::build_all() {
     if (!_pending_compilation)
         return;
 
-<<<<<<< Updated upstream
     kernels_cache::sorted_code sorted_program_code;
     {
         std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
@@ -493,64 +492,6 @@ void kernels_cache::build_all() {
     auto total = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     std::cout << "[Build kernels]" << std::endl;
     std::cout << "Total time:   "  << total.count() << " ms" << std::endl;
-=======
-    std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
-
-    auto sorted_program_code = get_program_source(_kernels_code);
-
-    _one_time_kernels.clear();
-	
-	std::vector<uint64_t> durations;  // store function execution time durations
-	
-    auto total_start = std::chrono::high_resolution_clock::now();
-    std::chrono::milliseconds rest, rest2;
-    std::chrono::_V2::system_clock::time_point build_program_end;
-
-    int num = 1;
-    for (auto& program : sorted_program_code) {
-		auto start = std::chrono::high_resolution_clock::now(); // Get the timepoint before the function is called
-        std::cout << "Batch Number : " << num << std::endl;
-        auto kernels = build_program(program.second);
-        num++;
-		build_program_end = std::chrono::high_resolution_clock::now(); // Get the timepoint after the function is called
-
-		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(build_program_end - start); // Get the difference in timepoints
-		durations.push_back(duration.count());
-
-        for (auto& k : kernels) {
-            const auto& entry_point = k.first;
-            const auto& k_id = program.second.entry_point_to_id[entry_point];
-            if (program.second.one_time) {
-                _one_time_kernels[k_id] = k.second;
-            } else {
-                _kernels[k_id] = k.second;
-            }
-        }
-
-        auto end = std::chrono::high_resolution_clock::now();
-        rest = std::chrono::duration_cast<std::chrono::milliseconds>(end - build_program_end);
-    }
-
-    auto total_finish = std::chrono::high_resolution_clock::now();
-    //rest2 = std::chrono::duration_cast<std::chrono::milliseconds>(total_finish - build_program_end);
-    auto total = std::chrono::duration_cast<std::chrono::milliseconds>(total_finish - total_start);
-	
-    // print out informations
-    std::cout << "[Build kernels]" << std::endl;
-    std::cout << "Total time:   "  << total.count() << " ms" << std::endl;
-    std::cout << "Size:         "  << durations.size() << std::endl;
-    
-    std::cout << "durations:    { ";
-    for (auto it = durations.begin(); it != durations.end(); it++) {
-        std::cout << *it << " ";
-    } std::cout << "}" << std::endl;
-
-    std::cout << "The rest:     "  << rest.count() << std::endl;
-    //std::cout << "The rest2:    "  << rest2.count() << std::endl;
-    std::cout << "Average time: "  << total.count() / durations.size() << " ms" << std::endl;
-    std::cout << "Max time:     "  << *max_element(durations.begin(), durations.end()) << " ms" << std::endl;
-    std::cout << "Min time:     "  << *min_element(durations.begin(), durations.end()) << " ms" << std::endl;
->>>>>>> Stashed changes
 
     std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
     _kernels_code.clear();
