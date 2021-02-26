@@ -245,6 +245,7 @@ kernels_cache::sorted_code kernels_cache::get_program_source(const kernels_code&
         auto& current_bucket = scode[key + "_" + std::to_string(kernels_counter++%num_programs)];
         current_bucket.dump_custom_program = dump_custom_program;
         current_bucket.one_time = one_time_kernel;
+        current_bucket.bucket_index = (kernels_counter-1)%num_programs; // TEMP (for print out)
 
         if (current_bucket.source.empty()) {
             current_bucket.options = options;
@@ -373,6 +374,7 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                 cl::vector<cl::Kernel> kernels;
                 // Run compilation
                 if (precompiled_kernels.empty()) {
+                    auto start = std::chrono::high_resolution_clock::now();
                     cl::Program program(_context.context(), sources_bucket_to_compile);
                     {
                         OV_ITT_SCOPED_TASK(itt::domains::CLDNN, "KernelsCache::BuildProgram::RunCompilation");
@@ -386,11 +388,13 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
 
                         dump_file << "*/\n";
                     }
-                    // auto start = std::chrono::high_resolution_clock::now();
+                    
                     program.createKernels(&kernels);
-                    // auto stop = std::chrono::high_resolution_clock::now();
-                    // auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-                    // std::cout << "Group "<< i << ": " << time.count() << " µs" << std::endl;
+                    auto stop = std::chrono::high_resolution_clock::now();
+                    auto time = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+                    
+                    std::cout << "[" << program_source.options << "_" << program_source.bucket_index << "]" << std::endl;
+                    std::cout << "> batch "<< i << " "<< ": " << time.count() << " ms" << std::endl;
                     if (is_cache_enabled()) {
                         // If kernels caching is enabled, then we save compiled bucket to binary file with name ${code_hash_value}.cl_cache
                         // Note: Bin file contains full bucket, not separate kernels, so kernels reuse across different models is quite limited
@@ -403,13 +407,13 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                     program.build(_context.device(), program_source.options.c_str());
                     program.createKernels(&kernels);
                 }
-                // int numKernels = 0;
+                //int numKernels = 0;
                 for (auto& k : kernels) {
-                    // numKernels++;
+                    //numKernels++;
                     auto kernel_name = k.getInfo<CL_KERNEL_FUNCTION_NAME>();
                     kmap.emplace(kernel_name, kernels_cache::kernel_type(k, _context.get_device_info().supports_usm));
                 }
-                // std::cout << "Number of Kernels: " << numKernels << std::endl;
+                //std::cout << "> number of kernels: " << numKernels << std::endl;
             } catch (const cl::BuildError& err) {
                 if (dump_sources && dump_file.good())
                     dump_file << "\n/* Build Log:\n";
@@ -462,7 +466,8 @@ void kernels_cache::build_all() {
     }
     auto start = std::chrono::high_resolution_clock::now();
     std::vector<std::future<void>> builds;
-    std::cout << "sorted_program_code.size()" << sorted_program_code.size() << std::endl;
+    // std::cout << "sorted_program_code.size()" << sorted_program_code.size() << std::endl;
+    std::cout << "\nTotal number of buckets: " << sorted_program_code.size() << std::endl << std::endl;
     for (auto& program : sorted_program_code) {
         builds.push_back(std::async(std::launch::async,[&]() {
             auto kernels = build_program(program.second);
@@ -471,7 +476,7 @@ void kernels_cache::build_all() {
             for (auto &k : kernels) {
                 const auto &entry_point = k.first;
                 const auto &k_id = program.second.entry_point_to_id[entry_point];
-                std::cout << "  k_id " << k_id << std::endl;
+                //std::cout << "  k_id " << k_id << std::endl;
                 if (program.second.one_time) {
                     _one_time_kernels[k_id] = k.second;
                 } else {
@@ -483,8 +488,8 @@ void kernels_cache::build_all() {
     std::for_each(builds.begin(), builds.end(), [&] (std::future<void>& f){ f.wait();});
     auto end = std::chrono::high_resolution_clock::now();
     auto total = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "[Build kernels]" << std::endl;
-    std::cout << "Total time:   "  << total.count() << " ms" << std::endl;
+    std::cout << "\n---Build kernels---" << std::endl;
+    std::cout << "Total time:   "  << total.count() << " ms \n" << std::endl;
 
     std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
     _kernels_code.clear();

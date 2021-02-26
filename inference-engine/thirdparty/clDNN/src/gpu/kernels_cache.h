@@ -51,6 +51,7 @@ public:
         bool dump_custom_program = false;
         bool one_time = false;
         std::map<std::string, std::string> entry_point_to_id;
+        int bucket_index; // TEMP (for print out)
     };
 
     struct kernel_code {
