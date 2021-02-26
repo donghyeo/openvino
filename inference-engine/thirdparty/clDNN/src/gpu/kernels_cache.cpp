@@ -220,6 +220,7 @@ kernels_cache::sorted_code kernels_cache::get_program_source(const kernels_code&
         bool batch_compilation = code.kernel_strings->batch_compilation;
         bool dump_custom_program = code.dump_custom_program;
         bool one_time_kernel = code.one_time_kernel;
+        int num_batches = 4; // number of batches in one bucket
 
         batch_compilation &= does_options_support_batch_compilation(options);
 
@@ -247,17 +248,21 @@ kernels_cache::sorted_code kernels_cache::get_program_source(const kernels_code&
 
         if (current_bucket.source.empty()) {
             current_bucket.options = options;
+            for (int i = 0; i < num_batches; i++) {
+                current_bucket.source.push_back({});
+            }
         }
 
         // Create new kernels bucket when the limit is reached
-        if ((current_bucket.kernels_counter % get_max_kernels_per_batch()) == 0) {
-            current_bucket.source.push_back({});
-        }
+        // if ((current_bucket.kernels_counter % get_max_kernels_per_batch()) == 0) {
+        //     current_bucket.source.push_back({});
+        // }
 
         current_bucket.entry_point_to_id[entry_point] = code.id;
         assert(org_source_code.size() == 1);
 
-        current_bucket.source.back().push_back(std::move(org_source_code.front()));
+        //current_bucket.source.back().push_back(std::move(org_source_code.front()));
+        current_bucket.source.at(current_bucket.kernels_counter % num_batches).push_back(std::move(org_source_code.front()));
 
         current_bucket.kernels_counter++;
     }
@@ -339,9 +344,6 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                               // failed to compile)
 
         uint32_t part_idx = 0;
-
-        std::vector<uint64_t> kernel_create;
-
         for (size_t i = 0; i < program_source.source.size(); i++) {
             auto sources_bucket_to_compile = program_source.source[i];
             const auto& hash_value = program_source.hash_values[i];
@@ -371,7 +373,6 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                 cl::vector<cl::Kernel> kernels;
                 // Run compilation
                 if (precompiled_kernels.empty()) {
-                    auto start = std::chrono::high_resolution_clock::now();
                     cl::Program program(_context.context(), sources_bucket_to_compile);
                     {
                         OV_ITT_SCOPED_TASK(itt::domains::CLDNN, "KernelsCache::BuildProgram::RunCompilation");
@@ -398,8 +399,6 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                         saveBinaryToFile(cached_bin_name, getProgramBinaries(program));
                     }
                 } else {
-                    auto start = std::chrono::high_resolution_clock::now();
-
                     cl::Program program(_context.context(), {_context.device()}, precompiled_kernels);
                     program.build(_context.device(), program_source.options.c_str());
                     program.createKernels(&kernels);
@@ -408,7 +407,6 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                 for (auto& k : kernels) {
                     // numKernels++;
                     auto kernel_name = k.getInfo<CL_KERNEL_FUNCTION_NAME>();
-                    //std::cout << kernel_name << std::endl;
                     kmap.emplace(kernel_name, kernels_cache::kernel_type(k, _context.get_device_info().supports_usm));
                 }
                 // std::cout << "Number of Kernels: " << numKernels << std::endl;
@@ -421,7 +419,13 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                         dump_file << p.second << "\n";
 
                     err_log += p.second + '\n';
+                }
+
+                if (dump_sources && dump_file.good())
+                    dump_file << "*/\n";
+            }
         }
+
         if (!err_log.empty()) {
             static const size_t max_msg_length = 128;
             std::string short_err_log(err_log, 0, std::min(err_log.length(), max_msg_length));
