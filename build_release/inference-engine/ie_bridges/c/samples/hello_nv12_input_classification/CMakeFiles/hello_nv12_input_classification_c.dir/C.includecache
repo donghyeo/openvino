@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../inference-engine/ie_bridges/c/include/c_api/ie_c_api.h
+stdint.h
+-
+stdio.h
+-
+
+/home/donghyeon/openvino_andrew/inference-engine/ie_bridges/c/samples/hello_nv12_input_classification/main.c
+stdlib.h
+-
+stdio.h
+-
+string.h
+-
+c_api/ie_c_api.h
+-
+

@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_release/ngraph/CMakeFiles/ext_gtest"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_release/ngraph/CMakeFiles/ext_gtest.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_release/ngraph/CMakeFiles/ext_gtest-complete.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-install.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-mkdir.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-download.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-update.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-patch.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-configure.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-build.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"ext_gtest"
+		],
+		"name" : "ext_gtest"
+	}
+}

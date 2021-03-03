@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../../../bin/intel64/Release/lib/libcommonTestUtils_s.a  CMakeFiles/commonTestUtils_s.dir/common_layers_params.cpp.o CMakeFiles/commonTestUtils_s.dir/data_utils.cpp.o CMakeFiles/commonTestUtils_s.dir/ngraph_test_utils.cpp.o CMakeFiles/commonTestUtils_s.dir/test_common.cpp.o CMakeFiles/commonTestUtils_s.dir/unicode_utils.cpp.o CMakeFiles/commonTestUtils_s.dir/xml_net_builder/ir_net.cpp.o CMakeFiles/commonTestUtils_s.dir/xml_net_builder/xml_net_builder.cpp.o
+/usr/bin/ranlib ../../../../../bin/intel64/Release/lib/libcommonTestUtils_s.a

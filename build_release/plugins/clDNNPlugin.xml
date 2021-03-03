@@ -1,0 +1,2 @@
+        <plugin name="GPU" location="libclDNNPlugin.so">
+        </plugin>

@@ -1,0 +1,2 @@
+        <plugin name="HETERO" location="libHeteroPlugin.so">
+        </plugin>

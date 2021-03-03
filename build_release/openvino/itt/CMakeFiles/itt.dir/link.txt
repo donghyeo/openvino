@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../bin/intel64/Release/lib/libitt.a  CMakeFiles/itt.dir/src/itt.cpp.o
+/usr/bin/ranlib ../../../bin/intel64/Release/lib/libitt.a

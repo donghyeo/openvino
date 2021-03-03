@@ -1,0 +1,2 @@
+        <plugin name="GNA" location="libGNAPlugin.so">
+        </plugin>

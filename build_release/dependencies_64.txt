@@ -1,0 +1,2 @@
+TBB=https://download.01.org/opencv/master/openvinotoolkit/thirdparty/linux/tbb2020_20200415_lin_strip.tgz
+GNA=https://download.01.org/opencv/master/openvinotoolkit/thirdparty/unified/GNA/GNA_02.00.00.1047.1.zip

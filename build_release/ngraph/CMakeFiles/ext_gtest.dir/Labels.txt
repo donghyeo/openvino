@@ -1,0 +1,13 @@
+# Target labels
+ ext_gtest
+# Source files and their labels
+/home/donghyeon/openvino_andrew/build_release/ngraph/CMakeFiles/ext_gtest
+/home/donghyeon/openvino_andrew/build_release/ngraph/CMakeFiles/ext_gtest.rule
+/home/donghyeon/openvino_andrew/build_release/ngraph/CMakeFiles/ext_gtest-complete.rule
+/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-install.rule
+/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-mkdir.rule
+/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-download.rule
+/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-update.rule
+/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-patch.rule
+/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-configure.rule
+/home/donghyeon/openvino_andrew/build_release/ngraph/gtest/src/ext_gtest-stamp/ext_gtest-build.rule

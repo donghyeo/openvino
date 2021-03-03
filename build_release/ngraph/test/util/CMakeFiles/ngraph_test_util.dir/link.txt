@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../../bin/intel64/Release/lib/libngraph_test_util.a  CMakeFiles/ngraph_test_util.dir/all_close_f.cpp.o CMakeFiles/ngraph_test_util.dir/engine/ie_engines.cpp.o CMakeFiles/ngraph_test_util.dir/engine/interpreter_engine.cpp.o CMakeFiles/ngraph_test_util.dir/float_util.cpp.o CMakeFiles/ngraph_test_util.dir/test_tools.cpp.o CMakeFiles/ngraph_test_util.dir/test_control.cpp.o
+/usr/bin/ranlib ../../../../bin/intel64/Release/lib/libngraph_test_util.a

@@ -1,0 +1,10 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/donghyeon/openvino_andrew/inference-engine/tests_deprecated/behavior/shared_tests/plugin_tests/behavior_test_plugin.cpp
+

@@ -1,0 +1,45 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/donghyeon/openvino_andrew/build_release/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_5e99f/fast && /usr/bin/make  -f CMakeFiles/cmTC_5e99f.dir/build.make CMakeFiles/cmTC_5e99f.dir/build
+make[1]: Entering directory '/home/donghyeon/openvino_andrew/build_release/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5e99f.dir/src.c.o
+/usr/bin/cc   -Wformat -Wformat-security -D_FORTIFY_SOURCE=2 -fstack-protector-strong -s -fsigned-char -ffunction-sections -fdata-sections -fdiagnostics-show-option -Wundef -Wreturn-type -Wunused-variable -Wuninitialized -Winit-self -Wmaybe-uninitialized -Wno-error=maybe-uninitialized -Wno-error=return-type -Wno-error=return-type -Wno-undef -DCMAKE_HAVE_LIBC_PTHREAD -fPIE   -o CMakeFiles/cmTC_5e99f.dir/src.c.o   -c /home/donghyeon/openvino_andrew/build_release/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_5e99f
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5e99f.dir/link.txt --verbose=1
+/usr/bin/cc   -Wformat -Wformat-security -D_FORTIFY_SOURCE=2 -fstack-protector-strong -s -fsigned-char -ffunction-sections -fdata-sections -fdiagnostics-show-option -Wundef -Wreturn-type -Wunused-variable -Wuninitialized -Winit-self -Wmaybe-uninitialized -Wno-error=maybe-uninitialized -Wno-error=return-type -Wno-error=return-type -Wno-undef -DCMAKE_HAVE_LIBC_PTHREAD    -rdynamic CMakeFiles/cmTC_5e99f.dir/src.c.o  -o cmTC_5e99f 
+CMakeFiles/cmTC_5e99f.dir/src.c.o: In function `main':
+src.c:(.text.main+0x30): undefined reference to `pthread_create'
+src.c:(.text.main+0x3c): undefined reference to `pthread_detach'
+src.c:(.text.main+0x48): undefined reference to `pthread_cancel'
+src.c:(.text.main+0x59): undefined reference to `pthread_join'
+src.c:(.text.main+0x6d): undefined reference to `pthread_atfork'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_5e99f.dir/build.make:106: recipe for target 'cmTC_5e99f' failed
+make[1]: *** [cmTC_5e99f] Error 1
+make[1]: Leaving directory '/home/donghyeon/openvino_andrew/build_release/CMakeFiles/CMakeTmp'
+Makefile:141: recipe for target 'cmTC_5e99f/fast' failed
+make: *** [cmTC_5e99f/fast] Error 2
+
+
+Source file was:
+#include <pthread.h>
+
+void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+

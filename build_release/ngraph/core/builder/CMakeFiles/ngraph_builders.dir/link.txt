@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../../bin/intel64/Release/lib/libngraph_builders.a  CMakeFiles/ngraph_builders.dir/src/builder/autobroadcast.cpp.o CMakeFiles/ngraph_builders.dir/src/builder/make_constant.cpp.o CMakeFiles/ngraph_builders.dir/src/builder/norm.cpp.o CMakeFiles/ngraph_builders.dir/src/builder/reduce_ops.cpp.o CMakeFiles/ngraph_builders.dir/src/builder/reshape.cpp.o CMakeFiles/ngraph_builders.dir/src/builder/split.cpp.o
+/usr/bin/ranlib ../../../../bin/intel64/Release/lib/libngraph_builders.a

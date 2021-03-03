@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../codegen/out/libapi_test_builds64.a  CMakeFiles/api_test_builds.dir/__/codegen/Debug/test_builds/api_cpp_test.cpp.o
+/usr/bin/ranlib ../codegen/out/libapi_test_builds64.a

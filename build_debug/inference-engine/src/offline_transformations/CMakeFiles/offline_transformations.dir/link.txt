@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../../bin/intel64/Debug/lib/liboffline_transformations.a  CMakeFiles/offline_transformations.dir/src/moc_transformations.cpp.o
+/usr/bin/ranlib ../../../../bin/intel64/Debug/lib/liboffline_transformations.a

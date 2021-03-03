@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_debug/inference-engine/CMakeFiles/data"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_debug/inference-engine/CMakeFiles/data.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/build_debug/inference-engine/CMakeFiles/data-complete.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-install.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-mkdir.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-download.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-update.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-patch.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-configure.rule"
+		},
+		{
+			"file" : "/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-build.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"data"
+		],
+		"name" : "data"
+	}
+}

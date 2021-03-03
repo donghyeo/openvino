@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../../../bin/intel64/Debug/lib/libunitTestUtils.a  CMakeFiles/unitTestUtils.dir/empty.cpp.o CMakeFiles/unitTestUtils.dir/mocks/mock_engine/dllmain.cpp.o CMakeFiles/unitTestUtils.dir/mocks/mock_engine/mock_plugin.cpp.o
+/usr/bin/ranlib ../../../../../bin/intel64/Debug/lib/libunitTestUtils.a

@@ -1,0 +1,46 @@
+# The set of languages for which implicit dependencies are needed:
+set(CMAKE_DEPENDS_LANGUAGES
+  "CXX"
+  )
+# The set of files for implicit dependencies of each language:
+set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/donghyeon/openvino_andrew/inference-engine/samples/benchmark_app/inputs_filling.cpp" "/home/donghyeon/openvino_andrew/build_debug/inference-engine/samples/benchmark_app/CMakeFiles/benchmark_app.dir/inputs_filling.cpp.o"
+  "/home/donghyeon/openvino_andrew/inference-engine/samples/benchmark_app/main.cpp" "/home/donghyeon/openvino_andrew/build_debug/inference-engine/samples/benchmark_app/CMakeFiles/benchmark_app.dir/main.cpp.o"
+  "/home/donghyeon/openvino_andrew/inference-engine/samples/benchmark_app/statistics_report.cpp" "/home/donghyeon/openvino_andrew/build_debug/inference-engine/samples/benchmark_app/CMakeFiles/benchmark_app.dir/statistics_report.cpp.o"
+  "/home/donghyeon/openvino_andrew/inference-engine/samples/benchmark_app/utils.cpp" "/home/donghyeon/openvino_andrew/build_debug/inference-engine/samples/benchmark_app/CMakeFiles/benchmark_app.dir/utils.cpp.o"
+  )
+set(CMAKE_CXX_COMPILER_ID "GNU")
+
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_CXX
+  "ENABLE_CLDNN=1"
+  "ENABLE_GNA"
+  "ENABLE_SPEECH_DEMO"
+  "GFLAGS_IS_A_DLL=0"
+  "IE_BUILD_POSTFIX=\"\""
+  "IE_THREAD=IE_THREAD_TBB"
+  "USE_OPENCV"
+  )
+
+# The include file search paths:
+set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "../inference-engine/samples/benchmark_app/../common"
+  "../inference-engine/include"
+  "../inference-engine/ie_bridges/c/include"
+  "../inference-engine/samples/common/format_reader"
+  "../inference-engine/samples/common/format_reader/.."
+  "inference-engine/samples/thirdparty/gflags/include"
+  "/home/donghyeon/intel/openvino_2021.2.185/opencv/include"
+  "../inference-engine/temp/tbb/include"
+  )
+
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
+  "/home/donghyeon/openvino_andrew/build_debug/inference-engine/ie_bridges/c/src/CMakeFiles/inference_engine_c_api.dir/DependInfo.cmake"
+  "/home/donghyeon/openvino_andrew/build_debug/inference-engine/samples/common/format_reader/CMakeFiles/format_reader.dir/DependInfo.cmake"
+  "/home/donghyeon/openvino_andrew/build_debug/inference-engine/samples/thirdparty/gflags/CMakeFiles/gflags_nothreads_static.dir/DependInfo.cmake"
+  "/home/donghyeon/openvino_andrew/build_debug/inference-engine/src/inference_engine/CMakeFiles/inference_engine.dir/DependInfo.cmake"
+  )
+
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")

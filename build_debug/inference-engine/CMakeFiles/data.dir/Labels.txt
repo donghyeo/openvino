@@ -1,0 +1,13 @@
+# Target labels
+ data
+# Source files and their labels
+/home/donghyeon/openvino_andrew/build_debug/inference-engine/CMakeFiles/data
+/home/donghyeon/openvino_andrew/build_debug/inference-engine/CMakeFiles/data.rule
+/home/donghyeon/openvino_andrew/build_debug/inference-engine/CMakeFiles/data-complete.rule
+/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-install.rule
+/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-mkdir.rule
+/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-download.rule
+/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-update.rule
+/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-patch.rule
+/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-configure.rule
+/home/donghyeon/openvino_andrew/inference-engine/temp/models/src/data-stamp/data-build.rule

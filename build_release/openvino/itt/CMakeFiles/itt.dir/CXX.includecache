@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../openvino/itt/include/openvino/function_name.hpp
+
+../openvino/itt/include/openvino/itt.hpp
+openvino/function_name.hpp
+-
+openvino/macro_overload.hpp
+-
+string
+-
+utility
+-
+
+../openvino/itt/include/openvino/macro_overload.hpp
+
+/home/donghyeon/openvino_andrew/openvino/itt/src/itt.cpp
+openvino/itt.hpp
+-
+cstdlib
+-
+ittnotify.h
+-
+

@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../bin/intel64/Debug/lib/libonnx_custom_op.a  CMakeFiles/onnx_custom_op.dir/onnx_custom_op.cpp.o
+/usr/bin/ranlib ../../../bin/intel64/Debug/lib/libonnx_custom_op.a

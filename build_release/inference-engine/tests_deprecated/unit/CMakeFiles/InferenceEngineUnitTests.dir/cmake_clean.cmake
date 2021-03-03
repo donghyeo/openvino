@@ -1,0 +1,40 @@
+file(REMOVE_RECURSE
+  "../../../../bin/intel64/Release/InferenceEngineUnitTests"
+  "../../../../bin/intel64/Release/InferenceEngineUnitTests.pdb"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/I8_quantisation_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/configuration_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/fp32_non_quantized_tests.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/gna_aminteldnn_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/gna_api_stub.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/gna_cppwraper_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/gna_graph_aot_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/gna_hardware_precision_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/gna_input_precision_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/gna_matcher.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/gna_memory_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/gna_proc_type_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/gna_pwl_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/gna_query_state_tests.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/i16_quantisation_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/layers/activation_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/layers/gna_align_filter2_tests.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/layers/gna_conv1d_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/layers/gna_eltwise_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/layers/gna_multi_input_to_concat_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/layers/gna_permute_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/layers/gna_split_to_concat_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/layers/gna_squeeze_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/engines/gna/test_irs.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/graph_tools/graph_copy_tests.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/graph_tools/graph_tools_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/inference_engine_tests/get_num_iterations_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/inference_engine_tests/layer_transform_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/inference_engine_tests/layers_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/inference_engine_tests/util_const_infer_test.cpp.o"
+  "CMakeFiles/InferenceEngineUnitTests.dir/inference_engine_tests/util_test.cpp.o"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/InferenceEngineUnitTests.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

@@ -1,0 +1,2 @@
+        <plugin name="MULTI" location="libMultiDevicePlugin.so">
+        </plugin>
