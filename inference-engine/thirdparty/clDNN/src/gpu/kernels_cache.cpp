@@ -206,10 +206,7 @@ size_t kernels_cache::get_max_kernels_per_batch() const {
 kernels_cache::sorted_code kernels_cache::get_program_source(const kernels_code& kernels_source_code) const {
     OV_ITT_SCOPED_TASK(itt::domains::CLDNN, "KernelsCache::BuildAll::GetProgramSource");
     sorted_code scode;
-    // min number of OCL programs (needed to leverage the parallel compilation)
-    // using more than 2 doesn't help much as overall the task is rather I/O bottle-necked (to load/save binaries, protected with mutex)
-    const size_t num_programs = 2;
-    size_t kernels_counter = 0;
+
     for (const auto& code : kernels_source_code) {
         std::string full_code = code.kernel_strings->jit + code.kernel_strings->str;
         full_code += get_undef_jit({full_code});
@@ -240,7 +237,7 @@ kernels_cache::sorted_code kernels_cache::get_program_source(const kernels_code&
             key += " __ONE_TIME__";
         }
 
-        auto& current_bucket = scode[key + "_" + std::to_string(kernels_counter++%num_programs)];
+        auto& current_bucket = scode[key];
         current_bucket.dump_custom_program = dump_custom_program;
         current_bucket.one_time = one_time_kernel;
 
@@ -341,6 +338,7 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
         std::vector<std::future<void>> builds;
         for (size_t i = 0; i < program_source.source.size(); i++) {
             builds.push_back(std::async(std::launch::async,[&]() {
+            //std::async(std::launch::async,[&]() {
                 auto start_each_batch = std::chrono::high_resolution_clock::now();
                 auto sources_bucket_to_compile = program_source.source[i];
                 const auto& hash_value = program_source.hash_values[i];
@@ -423,10 +421,12 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                 }
                 auto end_each_batch = std::chrono::high_resolution_clock::now();
                 auto total_each_batch = std::chrono::duration_cast<std::chrono::milliseconds>(end_each_batch - start_each_batch);
-                std::cout << "[ INFO ] Build bach in bucket took "  << total_each_batch.count() << " ms" << std::endl;
+                std::cout << "[ INFO ] Build batch in bucket took "  << total_each_batch.count() << " ms" << std::endl;
+            //}).wait();
             }));
-            std::for_each(builds.begin(), builds.end(), [&] (std::future<void>& f){ f.wait();});
         }
+        std::for_each(builds.begin(), builds.end(), [&] (std::future<void>& f){ f.wait();});
+        
 
         std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
         if (!err_log.empty()) {
@@ -441,15 +441,15 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
     }
 }
 
-kernels_cache::kernel_type kernels_cache::get_kernel(kernel_id id, bool one_time_kernel) const {
-    if (_pending_compilation)
-        throw std::runtime_error("Kernel cache is not compiled, call build_all() first!");
-
-    const auto& kernels = one_time_kernel ? _one_time_kernels : _kernels;
-    auto res = kernels.find(id);
-    if (kernels.end() == res)
-        throw std::runtime_error("Kernel " + id  + " not found in the kernel cache!");
-    return res->second;
+kernels_cache::kernel_type kernels_cache::get_kernel(kernel_id id, bool one_time_kernel) {
+    build_all();
+    if (one_time_kernel) {
+        return _one_time_kernels.at(id);
+    } else {
+        auto kernel = _kernels.at(id);
+        std::cout << id << std::endl;
+        return kernel;
+    }
 }
 
 void kernels_cache::build_all() {
@@ -472,16 +472,19 @@ void kernels_cache::build_all() {
         auto total_bucket = std::chrono::duration_cast<std::chrono::milliseconds>(end_bucket - start_bucket);
         std::cout << "[ INFO ] Build kerels for bucket(" << program.first << ") took "  << total_bucket.count() << " ms" << std::endl;
         std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
+        int numKernels = 0;
         for (auto& k : kernels) {
             const auto& entry_point = k.first;
             const auto& k_id = program.second.entry_point_to_id[entry_point];
-            std::cout << "  k_id " << k_id << std::endl;
+            //std::cout << "  k_id " << k_id << std::endl;
             if (program.second.one_time) {
                 _one_time_kernels[k_id] = k.second;
             } else {
                 _kernels[k_id] = k.second;
+                numKernels++;
             }
-        }));
+        }
+        std::cout << "[ INFO ] Total number of kernels in _kernels "  << numKernels << std::endl;
     }
     auto end = std::chrono::high_resolution_clock::now();
     auto total = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
