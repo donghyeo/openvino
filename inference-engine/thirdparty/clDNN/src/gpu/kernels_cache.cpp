@@ -335,13 +335,14 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                               // failed to compile)
 
         uint32_t part_idx = 0;
+        // int numKernels = 0;
         std::vector<std::future<void>> builds;
         for (size_t i = 0; i < program_source.source.size(); i++) {
-            builds.push_back(std::async(std::launch::async,[&]() {
-            //std::async(std::launch::async,[&]() {
+            size_t batch_id = i;
+            builds.push_back(std::async(std::launch::async, [&](size_t batch_id) {
                 auto start_each_batch = std::chrono::high_resolution_clock::now();
-                auto sources_bucket_to_compile = program_source.source[i];
-                const auto& hash_value = program_source.hash_values[i];
+                auto sources_bucket_to_compile = program_source.source[batch_id];
+                const auto& hash_value = program_source.hash_values[batch_id];
                 std::string cached_bin_name = get_cache_path() + std::to_string(hash_value) + ".cl_cache";
                 cl::Program::Binaries precompiled_kernels = {};
                 if (is_cache_enabled()) {
@@ -403,6 +404,7 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                     for (auto& k : kernels) {
                         auto kernel_name = k.getInfo<CL_KERNEL_FUNCTION_NAME>();
                         kmap.emplace(kernel_name, kernels_cache::kernel_type(k, _context.get_device_info().supports_usm));
+                        // numKernels++;
                     }
                 } catch (const cl::BuildError& err) {
                     if (dump_sources && dump_file.good())
@@ -422,8 +424,7 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
                 auto end_each_batch = std::chrono::high_resolution_clock::now();
                 auto total_each_batch = std::chrono::duration_cast<std::chrono::milliseconds>(end_each_batch - start_each_batch);
                 std::cout << "[ INFO ] Build batch in bucket took "  << total_each_batch.count() << " ms" << std::endl;
-            //}).wait();
-            }));
+            }, batch_id));
         }
         std::for_each(builds.begin(), builds.end(), [&] (std::future<void>& f){ f.wait();});
         
@@ -434,7 +435,7 @@ kernels_cache::kernels_map kernels_cache::build_program(const program_code& prog
             std::string short_err_log(err_log, 0, std::min(err_log.length(), max_msg_length));
             throw std::runtime_error("Program build failed:\n" + std::move(short_err_log));
         }
-
+        // std::cout << "[ INFO ] Total number of kernels from build "  << numKernels << std::endl;
         return kmap;
     } catch (const cl::Error& err) {
         throw ocl_error(err);
@@ -446,9 +447,7 @@ kernels_cache::kernel_type kernels_cache::get_kernel(kernel_id id, bool one_time
     if (one_time_kernel) {
         return _one_time_kernels.at(id);
     } else {
-        auto kernel = _kernels.at(id);
-        std::cout << id << std::endl;
-        return kernel;
+        return _kernels.at(id);
     }
 }
 
@@ -472,7 +471,7 @@ void kernels_cache::build_all() {
         auto total_bucket = std::chrono::duration_cast<std::chrono::milliseconds>(end_bucket - start_bucket);
         std::cout << "[ INFO ] Build kerels for bucket(" << program.first << ") took "  << total_bucket.count() << " ms" << std::endl;
         std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
-        int numKernels = 0;
+        // int numKernels = 0;
         for (auto& k : kernels) {
             const auto& entry_point = k.first;
             const auto& k_id = program.second.entry_point_to_id[entry_point];
@@ -481,10 +480,10 @@ void kernels_cache::build_all() {
                 _one_time_kernels[k_id] = k.second;
             } else {
                 _kernels[k_id] = k.second;
-                numKernels++;
+                // numKernels++;
             }
         }
-        std::cout << "[ INFO ] Total number of kernels in _kernels "  << numKernels << std::endl;
+        // std::cout << "[ INFO ] Total number of kernels in _kernels "  << numKernels << std::endl;
     }
     auto end = std::chrono::high_resolution_clock::now();
     auto total = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
