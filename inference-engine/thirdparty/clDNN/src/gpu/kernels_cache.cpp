@@ -332,28 +332,8 @@ void kernels_cache::build_program(const program_code& program_source, std::vecto
     try {
         std::string err_log;  // accumulated build log from all program's parts (only contains messages from parts which
                               // failed to compile)
-<<<<<<< HEAD
-
-        uint32_t part_idx = 0;
-        // int numKernels = 0;
-        std::vector<std::future<void>> builds;
-        for (size_t i = 0; i < program_source.source.size(); i++) {
-            size_t batch_id = i;
-            builds.push_back(std::async(std::launch::async, [&](size_t batch_id) {
-                auto start_each_batch = std::chrono::high_resolution_clock::now();
-                auto sources_bucket_to_compile = program_source.source[batch_id];
-                const auto& hash_value = program_source.hash_values[batch_id];
-                std::string cached_bin_name = get_cache_path() + std::to_string(hash_value) + ".cl_cache";
-                cl::Program::Binaries precompiled_kernels = {};
-                if (is_cache_enabled()) {
-                    // Try to load file with name ${hash_value}.cl_cache which contains precompiled kernels for current bucket
-                    // If read is successful, then remove kernels from compilation bucket
-                    auto bin = loadBinaryFromFile(cached_bin_name);
-                    if (!bin.empty()) {
-=======
         //     uint32_t part_idx = 0;
         builds->push_back(std::async(std::launch::async, [&] (size_t batch_id, const program_code& program_source)->kernels_map {
-                    //                auto start_each_batch = std::chrono::high_resolution_clock::now();
                     auto sources_bucket_to_compile = program_source.source[batch_id];
                     const auto& hash_value = program_source.hash_values[batch_id];
                     std::string cached_bin_name = get_cache_path() + std::to_string(hash_value) + ".cl_cache";
@@ -365,7 +345,6 @@ void kernels_cache::build_program(const program_code& program_source, std::vecto
                         // If read is successful, then remove kernels from compilation bucket
                         auto bin = loadBinaryFromFile(cached_bin_name);
                         if (!bin.empty()) {
->>>>>>> fae16659b... Fix bug and enable parallel b/w batches from different buckets
                         precompiled_kernels.push_back(bin);
                         }
                     }
@@ -389,6 +368,7 @@ void kernels_cache::build_program(const program_code& program_source, std::vecto
                     try {
                         cl::vector<cl::Kernel> kernels;
                         // Run compilation
+                        auto start_each_batch = std::chrono::high_resolution_clock::now();
                         if (precompiled_kernels.empty()) {
                             cl::Program program(_context.context(), sources_bucket_to_compile);
                             {
@@ -424,34 +404,17 @@ void kernels_cache::build_program(const program_code& program_source, std::vecto
                         }
                         {
                             //                        std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
+                            int numKernels = 0;
                             for (auto& k : kernels) {
                                 auto kernel_name = k.getInfo<CL_KERNEL_FUNCTION_NAME>();
                                 kmap.emplace(kernel_name, kernels_cache::kernel_type(k, _context.get_device_info().supports_usm));
+                                std::cout << kernel_name << std::endl;
+                                numKernels++;
                             }
+                            auto end_each_batch = std::chrono::high_resolution_clock::now();
+                            auto total_each_batch = std::chrono::duration_cast<std::chrono::milliseconds>(end_each_batch - start_each_batch);
+                            std::cout << "[ INFO ] Build batch in bucket_id "<< bucket_id << " with " << numKernels << " kernels took "  << total_each_batch.count() << " ms" << std::endl;
                         }
-<<<<<<< HEAD
-                    } else {
-                        cl::Program program(_context.context(), {_context.device()}, precompiled_kernels);
-                        program.build(_context.device(), program_source.options.c_str());
-                        program.createKernels(&kernels);
-                    }
-                    std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
-                    for (auto& k : kernels) {
-                        auto kernel_name = k.getInfo<CL_KERNEL_FUNCTION_NAME>();
-                        kmap.emplace(kernel_name, kernels_cache::kernel_type(k, _context.get_device_info().supports_usm));
-                        // numKernels++;
-                    }
-                } catch (const cl::BuildError& err) {
-                    if (dump_sources && dump_file.good())
-                        dump_file << "\n/* Build Log:\n";
-                    {
-                        std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
-                        for (auto& p : err.getBuildLog()) {
-                            if (dump_sources && dump_file.good())
-                                dump_file << p.second << "\n";
-
-                            err_log += p.second + '\n';
-=======
                         return kmap;
                     } catch (const cl::BuildError& err) {
 #if 0
@@ -467,50 +430,23 @@ void kernels_cache::build_program(const program_code& program_source, std::vecto
 #endif
                                 err_log += p.second + '\n';
                             }
->>>>>>> fae16659b... Fix bug and enable parallel b/w batches from different buckets
                         }
 #if 0
                         if (dump_sources && dump_file.good())
                             dump_file << "*/\n";
 #endif
                     }
-<<<<<<< HEAD
-                    if (dump_sources && dump_file.good())
-                        dump_file << "*/\n";
-                }
-                auto end_each_batch = std::chrono::high_resolution_clock::now();
-                auto total_each_batch = std::chrono::duration_cast<std::chrono::milliseconds>(end_each_batch - start_each_batch);
-                std::cout << "[ INFO ] Build batch in bucket took "  << total_each_batch.count() << " ms" << std::endl;
-            }, batch_id));
-        }
-        std::for_each(builds.begin(), builds.end(), [&] (std::future<void>& f){ f.wait();});
-        
-
-        std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
-=======
-                    //                auto end_each_batch = std::chrono::high_resolution_clock::now();
-                    //                auto total_each_batch = std::chrono::duration_cast<std::chrono::milliseconds>(end_each_batch - start_each_batch);
-                    //                std::cout << "[ INFO ] Build batch in bucket took "  << total_each_batch.count() << " ms" << std::endl;
                     return kmap;
         }, batch_id, program_source));
->>>>>>> fae16659b... Fix bug and enable parallel b/w batches from different buckets
         if (!err_log.empty()) {
             static const size_t max_msg_length = 128;
             std::string short_err_log(err_log, 0, std::min(err_log.length(), max_msg_length));
             throw std::runtime_error("Program build failed:\n" + std::move(short_err_log));
         }
-<<<<<<< HEAD
-        // std::cout << "[ INFO ] Total number of kernels from build "  << numKernels << std::endl;
-        return kmap;
-    } catch (const cl::Error& err) {
-        throw ocl_error(err);
-    }
-=======
         return;
 } catch (const cl::Error& err) {
     throw ocl_error(err);
 }
->>>>>>> fae16659b... Fix bug and enable parallel b/w batches from different buckets
 }
 
 kernels_cache::kernel_type kernels_cache::get_kernel(kernel_id id, bool one_time_kernel) {
@@ -541,31 +477,14 @@ void kernels_cache::build_all() {
     std::vector<program_code> programs;
 
     int numKernels = 0;
-    size_t n_threads = 4;
+    size_t n_threads = 2;
     size_t n_total_threads = 0;
     size_t bucket_id = 0;
     std::for_each(sorted_program_code.begin(), sorted_program_code.end(), [&] (const std::pair<std::string, program_code>&  p) {
         n_total_threads += p.second.source.size();});
     printf("n_total_threads = %d\n", (int)n_total_threads);
     for (auto& program : sorted_program_code) {
-<<<<<<< HEAD
         auto start_bucket = std::chrono::high_resolution_clock::now();
-        auto kernels = build_program(program.second);
-        auto end_bucket = std::chrono::high_resolution_clock::now();
-        auto total_bucket = std::chrono::duration_cast<std::chrono::milliseconds>(end_bucket - start_bucket);
-        std::cout << "[ INFO ] Build kerels for bucket(" << program.first << ") took "  << total_bucket.count() << " ms" << std::endl;
-        std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
-        // int numKernels = 0;
-        for (auto& k : kernels) {
-            const auto& entry_point = k.first;
-            const auto& k_id = program.second.entry_point_to_id[entry_point];
-            //std::cout << "  k_id " << k_id << std::endl;
-            if (program.second.one_time) {
-                _one_time_kernels[k_id] = k.second;
-            } else {
-                _kernels[k_id] = k.second;
-                // numKernels++;
-=======
         for (size_t batch_id = 0; batch_id < program.second.source.size(); ++batch_id) {
             programs.push_back(program.second);
             build_program(program.second, &builds, batch_id, bucket_id);
@@ -588,15 +507,13 @@ void kernels_cache::build_all() {
                 });
                 builds.clear();
                 programs.clear();
->>>>>>> fae16659b... Fix bug and enable parallel b/w batches from different buckets
             }
             t_iter++;
         }
-<<<<<<< HEAD
-        // std::cout << "[ INFO ] Total number of kernels in _kernels "  << numKernels << std::endl;
-=======
+        auto end_bucket = std::chrono::high_resolution_clock::now();
+        auto total_bucket = std::chrono::duration_cast<std::chrono::milliseconds>(end_bucket - start_bucket);
+        std::cout << "[ INFO ] Build all bucket " << bucket_id << " took "<< total_bucket.count() << " ms" << std::endl;
         bucket_id++;
->>>>>>> fae16659b... Fix bug and enable parallel b/w batches from different buckets
     }
     std::cout << "[ INFO ] Total number of kernels in _kernels "  << numKernels << std::endl;
 
@@ -606,7 +523,7 @@ void kernels_cache::build_all() {
     std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
     _kernels_code.clear();
     _pending_compilation = false;
-    std::cout << "[ INFO ] Build all kernels took "  << total.count() << " ms" << std::endl;
+    std::cout << "[ INFO ] Build all kernels took " << total.count() << " ms" << std::endl;
 }
 
 void kernels_cache::reset() {

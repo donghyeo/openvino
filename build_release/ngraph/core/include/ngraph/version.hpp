@@ -14,4 +14,4 @@
 // limitations under the License.
 //*****************************************************************************
 
-const char* NGRAPH_VERSION_NUMBER = "0.0.0+dfc0c0d";
+const char* NGRAPH_VERSION_NUMBER = "0.0.0+06063d1";

@@ -8,7 +8,7 @@ CXX_DEFINES = -DENABLE_CLDNN=1 -DENABLE_GNA -DENABLE_SPEECH_DEMO -DHAVE_SSE=1 -D
 
 CXX_INCLUDES = -I/home/donghyeon/openvino_andrew/inference-engine/src/inference_engine -I/home/donghyeon/openvino_andrew/inference-engine/src/readers/ir_reader -I/home/donghyeon/openvino_andrew/inference-engine/src/legacy_api/include -I/home/donghyeon/openvino_andrew/inference-engine/include -I/home/donghyeon/openvino_andrew/inference-engine/src/transformations/include -I/home/donghyeon/openvino_andrew/inference-engine/src/plugin_api -I/home/donghyeon/openvino_andrew/inference-engine/src/preprocessing -I/home/donghyeon/openvino_andrew/openvino/itt/include -I/home/donghyeon/openvino_andrew/openvino/conditional_compilation/include -I/home/donghyeon/openvino_andrew/inference-engine/src/readers/reader_api -isystem /home/donghyeon/openvino_andrew/inference-engine/temp/tbb/include -isystem /home/donghyeon/openvino_andrew/ngraph/core/include -isystem /home/donghyeon/openvino_andrew/inference-engine/thirdparty/pugixml/src -isystem /home/donghyeon/openvino_andrew/thirdparty/xbyak 
 
-# Custom defines: inference-engine/src/inference_engine/CMakeFiles/inference_engine_obj.dir/ie_version.cpp.o_DEFINES = CI_BUILD_NUMBER="custom_andrew_async_batch_test_dfc0c0d327eeef3d2f7d982fcfbd7e2d1984d5ad"
+# Custom defines: inference-engine/src/inference_engine/CMakeFiles/inference_engine_obj.dir/ie_version.cpp.o_DEFINES = CI_BUILD_NUMBER="custom_andrew_async_batch_test_06063d1b6003338baca2a86663470acf4b9db2c8"
 
 # Custom flags: inference-engine/src/inference_engine/CMakeFiles/inference_engine_obj.dir/cpu_x86_sse42/blob_transform_sse42.cpp.o_FLAGS = -msse4.2
 
