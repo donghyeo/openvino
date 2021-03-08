@@ -30,6 +30,8 @@
 #include <condition_variable>
 #include "kernel_selector_helper.h"
 #include "cldnn_itt.h"
+#include "tbb/parallel_for.h"
+#include "tbb/blocked_range.h"
 
 #ifndef ENABLE_UNICODE_PATH_SUPPORT
 # ifdef _WIN32
@@ -476,25 +478,42 @@ void kernels_cache::build_all() {
     int numKernels = 0;
     size_t program_id = 0;
     for (auto& program : sorted_program_code) {
-        for (size_t batch_id = 0; batch_id < program.second.source.size(); ++batch_id) {
-            programs.push_back(program.second);
-            builds.push_back(std::async(std::launch::async, [&]
-                (Semaphore& max_threads, std::pair<std::string, program_code> program, size_t program_id, size_t batch_id) {
-                BatchBuilder b(max_threads);
-                auto kmap = build_batch(program.second, batch_id, program_id);
-                std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
-                for (auto k : kmap) {
-                    const auto& entry_point = k.first;
-                    const auto& k_id = program.second.entry_point_to_id[entry_point];
-                    if (program.second.one_time) {
-                    _one_time_kernels[k_id] = k.second;
-                    } else {
-                        _kernels[k_id] = k.second;
-                        numKernels++;
-                    }
+        tbb::parallel_for(tbb::blocked_range<int>(0, program.second.source.size()), [&]
+            (Semaphore& max_threads, std::pair<std::string, program_code> program, size_t program_id, size_t batch_id) {
+            BatchBuilder b(max_threads);
+            auto kmap = build_batch(program.second, batch_id, program_id);
+            std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
+            for (auto k : kmap) {
+                const auto& entry_point = k.first;
+                const auto& k_id = program.second.entry_point_to_id[entry_point];
+                if (program.second.one_time) {
+                _one_time_kernels[k_id] = k.second;
+                } else {
+                    _kernels[k_id] = k.second;
+                    numKernels++;
                 }
-            }, std::ref(max_threads), program, program_id, batch_id));
-        }
+            }
+        });
+
+        // for (size_t batch_id = 0; batch_id < program.second.source.size(); ++batch_id) {
+        //     programs.push_back(program.second);
+        //     builds.push_back(std::async(std::launch::async, [&]
+        //         (Semaphore& max_threads, std::pair<std::string, program_code> program, size_t program_id, size_t batch_id) {
+        //         BatchBuilder b(max_threads);
+        //         auto kmap = build_batch(program.second, batch_id, program_id);
+        //         std::lock_guard<std::mutex> lock(_context.get_cache_mutex());
+        //         for (auto k : kmap) {
+        //             const auto& entry_point = k.first;
+        //             const auto& k_id = program.second.entry_point_to_id[entry_point];
+        //             if (program.second.one_time) {
+        //             _one_time_kernels[k_id] = k.second;
+        //             } else {
+        //                 _kernels[k_id] = k.second;
+        //                 numKernels++;
+        //             }
+        //         }
+        //     }, std::ref(max_threads), program, program_id, batch_id));
+        // }
         program_id++;
     }
 
